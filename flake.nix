@@ -8,7 +8,6 @@
 
   outputs = {
     self,
-    lib,
     nixpkgs,
     flake-utils,
     devshell,
@@ -29,7 +28,7 @@
         extensions = ["rust-src"]; # Include the rust stdlib source for intellij
       };
     in {
-      devShell = pkgs.devshell.mkShell {
+      devShell = pkgs.devshell.mkShell rec {
         name = "Rust Environment";
 
         packages = with pkgs; [
@@ -56,7 +55,7 @@
           # Use this if the rust binary needs additional libraries
           {
             name = "LD_LIBRARY_PATH";
-            value = lib.makeLibraryPath self.packages;
+            value = nixpkgs.lib.makeLibraryPath packages;
             # value = "${pkgs.xorg.libX11}/lib:${pkgs.xorg.libXcursor}/lib:${pkgs.xorg.libXrandr}/lib:${pkgs.xorg.libXi}/lib:${pkgs.libGL}/lib";
           }
         ];
