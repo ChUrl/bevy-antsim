@@ -13,7 +13,7 @@ const MIN_POSITION: Vec2 = Vec2::ZERO;
 const MAX_POSITION: Vec2 = Vec2::new(500., 500.);
 
 const ANT_COUNT: u32 = 25;
-const ANT_SPEED: f32 = 0.5;
+const ANT_SPEED: f32 = 0.75;
 const RANDOM_WALK_CONE: f32 = PI / 180. * 20.;
 
 /// The app's entrypoint.
@@ -26,11 +26,15 @@ fn main() {
     // Sets the color used to clear the screen, i.e. the background color.
     app.insert_resource(ClearColor(Color::srgb(0.9, 0.9, 0.9)));
 
-    // Startup systems are run once on startup.
+    // Sets the FixedUpdate frequency to 60hz.
+    app.insert_resource(Time::<Fixed>::from_hz(60.));
+
+    // Startup systems are ran once on startup.
     // The chain() function guarantees execution in the declared order.
     app.add_systems(Startup, (setup_system, hello_ants_system).chain());
 
-    // Update systems are ran each update cycle, i.e. each frame.
+    // FixedUpdate systems are ran at a fixed frequency.
+    // They might be ran multiple times per frame to catch up, or be skipped.
     app.add_systems(
         FixedUpdate,
         (
