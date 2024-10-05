@@ -13,7 +13,7 @@ const MIN_POSITION: Vec2 = Vec2::ZERO;
 const MAX_POSITION: Vec2 = Vec2::new(500., 500.);
 
 const ANT_COUNT: u32 = 25;
-const ANT_SPEED: f32 = 0.25;
+const ANT_SPEED: f32 = 0.5;
 const RANDOM_WALK_CONE: f32 = PI / 180. * 20.;
 
 /// The app's entrypoint.
@@ -32,7 +32,7 @@ fn main() {
 
     // Update systems are ran each update cycle, i.e. each frame.
     app.add_systems(
-        Update,
+        FixedUpdate,
         (
             randomized_velocity_system,
             wall_avoidance_system,
