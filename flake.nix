@@ -21,7 +21,7 @@
       };
 
       # Includes cargo, rustc, rustfmt
-      rust-stable = pkgs.rust-bin.stable.latest.default.override {
+      rust-stable = pkgs.rust-bin.nightly.latest.default.override {
         extensions = ["rust-src"]; # Include the rust stdlib source for intellij
       };
     in {
@@ -30,6 +30,9 @@
 
         nativeBuildInputs = with pkgs; [
           gcc14
+          clang_19
+          # lld
+          mold
           rust-stable
           # rust-analyzer # System install
 
