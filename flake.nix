@@ -35,6 +35,7 @@
           mold
           rust-stable
           # rust-analyzer # System install
+          cargo-expand
 
           # Bevy Dependencies: https://github.com/bevyengine/bevy/blob/release-0.14.2/docs/linux_dependencies.md#nix
           pkg-config
