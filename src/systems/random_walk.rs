@@ -2,7 +2,7 @@ use crate::{
     components::common::{Position, RandomizedVelocity},
     ANT_SPEED, MAX_POSITION, MIN_POSITION, RANDOM_WALK_CONE,
 };
-use bevy::{math::VectorSpace, prelude::*};
+use bevy::prelude::*;
 
 /// Randomizes the ``RandomizedVelocity`` components of entities that have them.
 #[allow(clippy::needless_pass_by_value)] // I can't specify &Res<Time>, so pass by value
