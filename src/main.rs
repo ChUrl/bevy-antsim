@@ -9,6 +9,7 @@ use systems::{
         animation_system, position_update_system, randomized_velocity_change_system,
         randomized_velocity_system, wall_avoidance_system,
     },
+    anthill::leave_anthill_system,
     startup::{hello_ants_system, setup_system},
 };
 
@@ -16,9 +17,9 @@ use systems::{
 const MIN_POSITION: Vec2 = Vec2::splat(-450.);
 const MAX_POSITION: Vec2 = Vec2::splat(450.);
 
-const ANT_COUNT: u32 = 200;
+const ANT_COUNT: u32 = 20;
 const ANT_SPEED: f32 = 0.5;
-const ANT_ANIMATION_SPEED: f32 = 1. / 62.;
+const ANT_ANIMATION_SPEED: f32 = 1. / 82.;
 const ANT_SCALE: f32 = 0.15;
 
 const VELOCITY_CHANGE_SCALE: f32 = PI / 180. * 1.; // Single degree
@@ -53,6 +54,7 @@ fn main() {
     app.add_systems(
         FixedUpdate,
         (
+            leave_anthill_system,
             randomized_velocity_change_system,
             randomized_velocity_system,
             wall_avoidance_system,
