@@ -2,6 +2,7 @@ mod components;
 mod systems;
 
 use bevy::prelude::*;
+use bevy_embedded_assets::EmbeddedAssetPlugin;
 use std::f32::consts::PI;
 use systems::{
     ant::{
@@ -30,7 +31,12 @@ fn main() {
 
     // The DefaultPlugins contain the "Window" plugin.
     // ImagePlugin::default_nearest() is supposed to prevent blurry sprites.
-    app.add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()));
+    app.add_plugins((
+        EmbeddedAssetPlugin {
+            mode: bevy_embedded_assets::PluginMode::ReplaceDefault,
+        },
+        DefaultPlugins.set(ImagePlugin::default_nearest()),
+    ));
 
     // Sets the color used to clear the screen, i.e. the background color.
     app.insert_resource(ClearColor(Color::srgb(0.9, 0.9, 0.9)));
