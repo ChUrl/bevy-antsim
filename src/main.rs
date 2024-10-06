@@ -4,24 +4,33 @@ mod systems;
 use bevy::prelude::*;
 use std::f32::consts::PI;
 use systems::{
-    random_walk::{random_walk_system, randomized_velocity_system, wall_avoidance_system},
+    ant::{
+        animation_system, position_update_system, randomized_velocity_change_system,
+        randomized_velocity_system, wall_avoidance_system,
+    },
     startup::{hello_ants_system, setup_system},
 };
 
 // TODO: Use Settings Resource
-const MIN_POSITION: Vec2 = Vec2::ZERO;
-const MAX_POSITION: Vec2 = Vec2::new(500., 500.);
+const MIN_POSITION: Vec2 = Vec2::splat(-450.);
+const MAX_POSITION: Vec2 = Vec2::splat(450.);
 
-const ANT_COUNT: u32 = 25;
-const ANT_SPEED: f32 = 0.75;
-const RANDOM_WALK_CONE: f32 = PI / 180. * 20.;
+const ANT_COUNT: u32 = 200;
+const ANT_SPEED: f32 = 0.5;
+const ANT_ANIMATION_SPEED: f32 = 1. / 62.;
+const ANT_SCALE: f32 = 0.15;
+
+const VELOCITY_CHANGE_SCALE: f32 = PI / 180. * 1.; // Single degree
+const VELOCITY_CHANGE_MAX: f32 = PI / 180. * 0.5;
+const VELOCITY_CHANGE_PERIOD: f32 = 0.5;
 
 /// The app's entrypoint.
 fn main() {
     let mut app = App::new();
 
     // The DefaultPlugins contain the "Window" plugin.
-    app.add_plugins(DefaultPlugins);
+    // ImagePlugin::default_nearest() is supposed to prevent blurry sprites.
+    app.add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()));
 
     // Sets the color used to clear the screen, i.e. the background color.
     app.insert_resource(ClearColor(Color::srgb(0.9, 0.9, 0.9)));
@@ -38,9 +47,11 @@ fn main() {
     app.add_systems(
         FixedUpdate,
         (
+            randomized_velocity_change_system,
             randomized_velocity_system,
             wall_avoidance_system,
-            random_walk_system,
+            position_update_system,
+            animation_system,
         )
             .chain(),
     );

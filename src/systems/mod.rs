@@ -1,2 +1,2 @@
-pub mod random_walk;
+pub mod ant;
 pub mod startup;

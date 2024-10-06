@@ -1,5 +1,11 @@
-use super::common::{Position, RandomizedVelocity};
+use super::common::{
+    AnimationIndices, AnimationTimer, Position, RandomizedVelocityChange, Velocity,
+    VelocityChangeTimer,
+};
+use crate::{ANT_ANIMATION_SPEED, VELOCITY_CHANGE_PERIOD, VELOCITY_CHANGE_SCALE};
 use bevy::prelude::*;
+use rand::Rng;
+use std::f32::consts::PI;
 
 /// This bundle represents the ant entity.
 /// The ``state`` determines the ant's behavior, it stores its current ``position``
@@ -13,7 +19,14 @@ use bevy::prelude::*;
 pub struct AntBundle {
     pub state: AntState,
     pub position: Position,
-    pub velocity: RandomizedVelocity,
+    pub velocity: Velocity,
+    pub velocity_change: RandomizedVelocityChange,
+    // TODO: This timer is only needed once
+    pub velocity_change_timer: VelocityChangeTimer,
+    pub texture_atlas: TextureAtlas,
+    pub animation_indices: AnimationIndices,
+    // TODO: This timer is only needed once
+    pub animation_timer: AnimationTimer,
 
     // These are not components, but other bundles of components. Those can be nested.
     pub sprite: SpriteBundle,
@@ -42,17 +55,37 @@ pub enum AntState {
 // The "impl" keyword allows us to implement functions in a struct's namespace, i.e. "methods"
 impl AntBundle {
     /// Instantiate a new ``AntBundle`` with a color and a starting position.
-    pub fn new(position: Vec2, color: Color) -> Self {
+    pub fn new(
+        position: Vec2,
+        texture: Handle<Image>,
+        texture_atlas: TextureAtlas,
+        animation_indices: AnimationIndices,
+        scale: Vec2,
+    ) -> Self {
         Self {
             state: AntState::Searching,
             position: Position(position),
-            velocity: RandomizedVelocity(Vec2::ZERO),
+            velocity: Velocity(rand::thread_rng().gen_range(-PI..PI)),
+            velocity_change: RandomizedVelocityChange(
+                rand::thread_rng().gen_range(-1.0..1.0) * VELOCITY_CHANGE_SCALE,
+            ),
+            velocity_change_timer: VelocityChangeTimer(Timer::from_seconds(
+                VELOCITY_CHANGE_PERIOD,
+                TimerMode::Repeating,
+            )),
+            texture_atlas,
+            animation_indices,
+            animation_timer: AnimationTimer(Timer::from_seconds(
+                ANT_ANIMATION_SPEED,
+                TimerMode::Repeating,
+            )),
             sprite: SpriteBundle {
                 transform: Transform {
-                    scale: Vec3::new(20., 20., 20.),
+                    translation: position.extend(0.),
+                    scale: scale.extend(1.),
                     ..default()
                 },
-                sprite: Sprite { color, ..default() },
+                texture,
                 ..default()
             },
         }
